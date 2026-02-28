@@ -53,20 +53,29 @@
             <div class="drop-zone" id="encode-drop">
                 <div class="drop-content">
                     <div class="drop-icon">&#x1F5BC;</div>
-                    <p>Drop an image here or click to browse</p>
-                    <p class="drop-hint">PNG, JPG, WebP, AVIF, BMP, TGA, TIFF, GIF &mdash; max 50 MB</p>
+                    <p>Drop a lossless image here or click to browse</p>
+                    <p class="drop-hint">PNG, BMP, TGA, TIFF, GIF &mdash; lossless only, max 50 MB</p>
+                    <p class="drop-hint lossy-note">JPEG and lossy WebP are not supported &mdash; use the original lossless source</p>
                 </div>
-                <input type="file" id="encode-file" accept=".png,.jpg,.jpeg,.bmp,.tga,.webp,.avif,.tiff,.tif,.gif" hidden>
+                <input type="file" id="encode-file" accept=".png,.bmp,.tga,.tiff,.tif,.gif" hidden>
             </div>
             <div id="encode-status" class="status-area" style="display: none;">
+                <div id="encode-preview-area" class="preview-area" style="display: none;">
+                    <img id="encode-preview" alt="Image being compressed">
+                </div>
                 <div class="progress-bar"><div class="progress-fill" id="encode-progress"></div></div>
                 <p id="encode-message">Uploading...</p>
             </div>
             <div id="encode-result" class="result-area" style="display: none;">
+                <div id="encode-result-preview" class="preview-area" style="display: none;">
+                    <img id="encode-result-img" alt="Compressed image">
+                </div>
                 <div class="score-card">
                     <div class="stars" id="encode-stars">&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</div>
+                    <div class="score-message" id="encode-score-msg"></div>
                     <div class="ratio" id="encode-ratio"></div>
                     <div class="sizes" id="encode-sizes"></div>
+                    <div class="score-detail" id="encode-detail"></div>
                 </div>
                 <button id="encode-download" class="btn btn-green">Download .fortner</button>
                 <button id="encode-again" class="btn btn-dark">Compress Another</button>

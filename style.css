@@ -447,3 +447,64 @@ main {
     .key-panel { margin-top: 40px; }
     .tab { font-size: 13px; padding: 8px 12px; }
 }
+
+/* --- Lossy Warning --- */
+.lossy-warning {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    color: #fca5a5;
+    text-align: center;
+    animation: fadeInWarning 0.3s ease;
+}
+
+.lossy-warning strong {
+    color: #ef4444;
+    display: block;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.lossy-warning .warning-detail {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-dim);
+}
+
+@keyframes fadeInWarning {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Lossy Note (drop zone subtext) --- */
+.lossy-note {
+    font-size: 11px;
+    color: #f97316;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+/* --- Score Message & Detail --- */
+.score-message {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.score-detail {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+/* --- Encode Preview --- */
+.preview-area.encode-preview {
+    text-align: center;
+}
+
+.preview-area.encode-preview img {
+    max-height: 300px;
+    border-radius: 4px;
+}

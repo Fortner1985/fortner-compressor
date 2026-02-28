@@ -37,10 +37,16 @@
     const encodeMessage = $('#encode-message');
     const encodeResult = $('#encode-result');
     const encodeStars  = $('#encode-stars');
+    const encodeScoreMsg = $('#encode-score-msg');
     const encodeRatio  = $('#encode-ratio');
     const encodeSizes  = $('#encode-sizes');
+    const encodeDetail = $('#encode-detail');
     const encodeDownload = $('#encode-download');
     const encodeAgain  = $('#encode-again');
+    const encodePreviewArea = $('#encode-preview-area');
+    const encodePreviewImg  = $('#encode-preview');
+    const encodeResultPreview = $('#encode-result-preview');
+    const encodeResultImg     = $('#encode-result-img');
 
     // Decode
     const decodeDrop   = $('#decode-drop');
@@ -199,13 +205,24 @@
     }
 
     // --- Encode ----------------------------------------------------------
+    // Lossy formats that Fortner rejects
+    const lossyFormats = ['jpg', 'jpeg', 'webp', 'avif'];
+    const losslessFormats = ['png', 'bmp', 'tga', 'tiff', 'tif', 'gif'];
+
     async function handleEncode(file) {
         if (!file) return;
 
         // Validate extension
         const ext = file.name.split('.').pop().toLowerCase();
-        const allowed = ['png','jpg','jpeg','bmp','tga','webp','avif','tiff','tif','gif'];
-        if (!allowed.includes(ext)) {
+
+        // Reject lossy formats with clear message (matches WPF behavior)
+        if (lossyFormats.includes(ext)) {
+            const fmtName = ext.toUpperCase();
+            showLossyWarning(fmtName);
+            return;
+        }
+
+        if (!losslessFormats.includes(ext)) {
             setFooter(`Unsupported file type: .${ext}`);
             return;
         }
@@ -216,7 +233,7 @@
             return;
         }
 
-        // Show progress
+        // Show progress + image preview
         encodeDrop.style.display = 'none';
         encodeResult.style.display = 'none';
         encodeStatus.style.display = '';
@@ -224,6 +241,14 @@
         encodeProgress.classList.add('indeterminate');
         encodeMessage.textContent = `Compressing ${file.name}...`;
         setFooter(`Uploading ${file.name} (${formatBytes(file.size)})...`);
+
+        // Show image preview while compressing
+        try {
+            const previewUrl = URL.createObjectURL(file);
+            encodePreviewImg.src = previewUrl;
+            encodePreviewArea.style.display = '';
+            encodePreviewImg.onload = () => URL.revokeObjectURL(previewUrl);
+        } catch { encodePreviewArea.style.display = 'none'; }
 
         try {
             const form = new FormData();
@@ -251,7 +276,13 @@
 
             if (!resp.ok) {
                 const err = await resp.json().catch(() => ({ error: 'Unknown error' }));
-                setFooter(`Encode error: ${err.error || resp.statusText}`);
+                // Check for lossy rejection from server (exit codes 2 or 3)
+                const errMsg = err.error || err.details || resp.statusText;
+                if (errMsg.toLowerCase().includes('lossy') || errMsg.toLowerCase().includes('jpeg artifact')) {
+                    showLossyWarning(ext.toUpperCase(), errMsg);
+                    return;
+                }
+                setFooter(`Encode error: ${errMsg}`);
                 resetEncode();
                 return;
             }
@@ -266,16 +297,32 @@
             lastEncodedBlob = blob;
             lastEncodedName = file.name.replace(/\.[^.]+$/, '.fortner');
 
-            // Show result
+            // Show result with image preview
             encodeProgress.classList.remove('indeterminate');
             encodeProgress.style.width = '100%';
             encodeStatus.style.display = 'none';
             encodeResult.style.display = '';
 
+            // Show the source image in results
+            try {
+                const resultUrl = URL.createObjectURL(file);
+                encodeResultImg.src = resultUrl;
+                encodeResultPreview.style.display = '';
+                encodeResultImg.onload = () => URL.revokeObjectURL(resultUrl);
+            } catch { encodeResultPreview.style.display = 'none'; }
+
             const ratioNum = parseFloat(ratio);
-            encodeStars.textContent = getStars(ratioNum);
+            const scoreInfo = getCompressionScore(ratioNum);
+            encodeStars.textContent = scoreInfo.stars;
+            encodeStars.style.color = scoreInfo.color;
+            encodeScoreMsg.textContent = scoreInfo.message;
             encodeRatio.textContent = `${ratio} smaller`;
             encodeSizes.textContent = `${formatBytes(origSize)} → ${formatBytes(compSize)}`;
+            // Detail line like WPF
+            const xRatio = origSize / compSize;
+            encodeDetail.textContent = xRatio >= 2
+                ? `${ratioNum.toFixed(1)}% smaller  ·  ${xRatio.toFixed(1)}x smaller than original`
+                : `${ratioNum.toFixed(1)}% space saved`;
             setFooter(`Compressed: ${file.name} → ${lastEncodedName} (${ratio} smaller)`);
 
         } catch (err) {
@@ -287,9 +334,44 @@
     function resetEncode() {
         encodeStatus.style.display = 'none';
         encodeResult.style.display = 'none';
+        encodePreviewArea.style.display = 'none';
+        encodeResultPreview.style.display = 'none';
         encodeDrop.style.display = '';
         lastEncodedBlob = null;
         lastEncodedName = '';
+    }
+
+    // --- Lossy Format Warning -------------------------------------------
+    function showLossyWarning(formatName, serverMsg) {
+        resetEncode();
+        const msg = serverMsg ||
+            `This is a lossy format (${formatName}).\n\n` +
+            `Fortner is designed for lossless, high-quality images.\n` +
+            `JPEG and lossy WebP permanently discard image data.\n\n` +
+            `Please use the original lossless source image\n` +
+            `(PNG, TIFF, BMP, or lossless WebP) for best results.`;
+
+        // Show inline warning instead of alert
+        encodeDrop.style.display = 'none';
+        encodeResult.style.display = 'none';
+        encodeStatus.style.display = '';
+        encodePreviewArea.style.display = 'none';
+        encodeProgress.classList.remove('indeterminate');
+        encodeProgress.style.width = '0%';
+        encodeMessage.innerHTML =
+            `<span class="lossy-warning">` +
+            `<strong>⚠ Lossy Format Detected (${formatName})</strong><br><br>` +
+            `Fortner is designed for <strong>lossless</strong>, high-quality images.<br>` +
+            `JPEG and lossy WebP permanently discard image data.<br><br>` +
+            `Please use the original lossless source image<br>` +
+            `(PNG, TIFF, BMP, or lossless WebP) for best results.` +
+            `</span>`;
+        setFooter(`Encoding cancelled — ${formatName} is a lossy format`);
+
+        // Auto-reset after 8 seconds
+        setTimeout(() => {
+            if (encodeStatus.style.display !== 'none') resetEncode();
+        }, 8000);
     }
 
     // --- Decode ----------------------------------------------------------
@@ -373,13 +455,31 @@
     }
 
     function getStars(ratioPercent) {
-        // Matches the WPF scoring tiers
-        if (ratioPercent >= 80) return '★★★★★';
-        if (ratioPercent >= 60) return '★★★★☆';
-        if (ratioPercent >= 40) return '★★★☆☆';
-        if (ratioPercent >= 20) return '★★★☆☆';
-        if (ratioPercent >= 0)  return '★★☆☆☆';
-        return '★☆☆☆☆'; // larger than original
+        return getCompressionScore(ratioPercent).stars;
+    }
+
+    // Matches WPF UpdateCompressionScore() exactly — 10 tiers with half-stars
+    function getCompressionScore(pct) {
+        let stars, message, color;
+
+        if (pct >= 97)      { stars = 5.0; message = 'Incredible! Maximum compression achieved'; color = '#fbbf24'; }
+        else if (pct >= 93) { stars = 4.5; message = 'Outstanding — near-perfect compression';   color = '#fbbf24'; }
+        else if (pct >= 88) { stars = 4.0; message = 'Excellent results';                        color = '#fbbf24'; }
+        else if (pct >= 80) { stars = 3.5; message = 'Great compression';                        color = '#a3e635'; }
+        else if (pct >= 70) { stars = 3.0; message = 'Good compression';                         color = '#a3e635'; }
+        else if (pct >= 55) { stars = 2.5; message = 'Decent savings';                           color = '#60a5fa'; }
+        else if (pct >= 40) { stars = 2.0; message = 'Moderate compression';                     color = '#60a5fa'; }
+        else if (pct >= 25) { stars = 1.5; message = 'Some savings';                             color = '#f97316'; }
+        else if (pct >= 10) { stars = 1.0; message = 'Minimal compression';                      color = '#f97316'; }
+        else                { stars = 0.5; message = 'Very low compression';                     color = '#ef4444'; }
+
+        // Build star display  (★ = filled, ½ = half, ☆ = empty)
+        const full = Math.floor(stars);
+        const half = (stars - full) >= 0.5;
+        const empty = 5 - full - (half ? 1 : 0);
+        const display = '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+
+        return { stars: display, message, color, value: stars };
     }
 
     function downloadBlob(blob, name) {
