@@ -205,9 +205,9 @@
     }
 
     // --- Encode ----------------------------------------------------------
-    // Lossy formats that Fortner rejects
-    const lossyFormats = ['jpg', 'jpeg', 'webp', 'avif'];
-    const losslessFormats = ['png', 'bmp', 'tga', 'tiff', 'tif', 'gif'];
+    // Lossy formats that Fortner rejects (JPEG only)
+    const lossyFormats = ['jpg', 'jpeg'];
+    const acceptedFormats = ['png', 'webp', 'avif', 'bmp', 'tga', 'tiff', 'tif', 'gif'];
 
     async function handleEncode(file) {
         if (!file) return;
@@ -222,7 +222,7 @@
             return;
         }
 
-        if (!losslessFormats.includes(ext)) {
+        if (!acceptedFormats.includes(ext)) {
             setFooter(`Unsupported file type: .${ext}`);
             return;
         }

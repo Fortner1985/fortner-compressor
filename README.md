@@ -8,7 +8,7 @@ Upload and download images compressed with the Fortner format.
 
 This is the web interface for the Fortner Smart Compression service. It lets you:
 
-- **Compress** images (PNG, JPG, WebP, AVIF, BMP, TGA, TIFF, GIF) into the ultra-efficient `.fortner` format
+- **Compress** images (PNG, WebP, AVIF, BMP, TGA, TIFF, GIF) into the ultra-efficient `.fortner` format
 - **Decompress** `.fortner` files back to PNG
 
 ## How It Works
