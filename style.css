@@ -1,0 +1,396 @@
+/* ==========================================================================
+   Fortner Web — Styles
+   Color scheme matched to the WPF desktop app (MainWindow.xaml)
+   
+   NO proprietary information in this file.
+   ========================================================================== */
+
+/* --- Color Variables (from MainWindow.xaml) --- */
+:root {
+    --bg-deep:      #12121a;   /* Window background */
+    --bg-surface:   #1a1a2e;   /* Title bar, panels */
+    --bg-card:      #1e1e2e;   /* Image canvas area */
+    --bg-input:     #0f0f1a;   /* Deep input bg */
+    --bg-button:    #2a2a3e;   /* DarkButton */
+    --bg-hover:     #505050;   /* Button hover */
+    --bg-pressed:   #606060;   /* Button pressed */
+    
+    --accent-green: #4a5acd;   /* GreenButton (actually indigo) */
+    --accent-blue:  #5865F2;   /* BlueButton / border */
+    --accent-red:   #7c3aed;   /* RedButton (actually purple) */
+    --accent-orange:#6366f1;   /* OrangeButton (actually indigo) */
+    --accent-purple:#8b5cf6;   /* PurpleButton / brand color */
+    
+    --border:       #4338ca;   /* Panel borders, status bar bg */
+    --border-light: #555;      /* Button borders */
+    
+    --text-white:   #ffffff;
+    --text-light:   #ccc;
+    --text-muted:   #a0a0cc;   /* Subtitle text */
+    --text-accent:  #b8b8ff;   /* Zoom label, highlights */
+    --text-info:    #c7d2fe;   /* Compression message */
+    --text-label:   #a5b4fc;   /* Section headers */
+    --text-dim:     #6b7280;   /* Detail text */
+    --text-star:    #fbbf24;   /* Star rating gold */
+    
+    --window-btn-hover: #3a3a5e;
+    --close-hover:  #e81123;
+    
+    --radius:       3px;
+    --radius-lg:    8px;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Title Bar --- */
+.title-bar {
+    background: var(--bg-surface);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.title-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.title-brand {
+    font-family: 'Segoe UI Light', 'Segoe UI', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--accent-purple);
+}
+
+.title-sub {
+    font-family: 'Segoe UI Light', 'Segoe UI', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text-muted);
+}
+
+.title-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* --- Server Status Dot --- */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background 0.3s;
+}
+.status-dot.online  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.status-dot.offline { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+.status-dot.checking { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+
+/* --- Main Content --- */
+main {
+    flex: 1;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- Panels --- */
+.panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.key-panel {
+    max-width: 500px;
+    margin: 80px auto 0;
+    text-align: center;
+}
+
+.key-panel h2 {
+    color: var(--accent-purple);
+    font-weight: 300;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.key-panel p {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.key-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.key-input-row input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    color: var(--text-white);
+    padding: 10px 14px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.key-input-row input:focus {
+    border-color: var(--accent-purple);
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+/* --- Tab Bar --- */
+.tab-bar {
+    display: flex;
+    gap: 4px;
+}
+
+.tab {
+    flex: 1;
+    background: var(--bg-button);
+    color: var(--text-muted);
+    border: 1px solid var(--border-light);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab:hover {
+    background: var(--bg-hover);
+}
+
+.tab.active {
+    background: var(--bg-surface);
+    color: var(--text-white);
+    border-color: var(--border);
+    border-bottom: 1px solid var(--bg-surface);
+    margin-bottom: -1px;
+}
+
+/* --- Drop Zone --- */
+.drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: var(--bg-card);
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--accent-purple);
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.drop-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.7;
+}
+
+.drop-content p {
+    color: var(--text-muted);
+    margin: 4px 0;
+}
+
+.drop-hint {
+    font-size: 12px;
+    color: var(--text-dim) !important;
+}
+
+/* --- Progress Bar --- */
+.status-area {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-input);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-fill.indeterminate {
+    width: 30%;
+    animation: indeterminate 1.5s infinite ease-in-out;
+}
+
+@keyframes indeterminate {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+}
+
+.status-area p {
+    color: var(--text-info);
+    font-size: 13px;
+}
+
+/* --- Result Area --- */
+.result-area {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.score-card {
+    background: var(--bg-card);
+    border: 1px solid var(--accent-blue);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.stars {
+    font-size: 28px;
+    color: var(--text-star);
+    letter-spacing: 4px;
+}
+
+.ratio {
+    color: var(--text-info);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 8px 0 4px;
+}
+
+.sizes {
+    color: var(--text-dim);
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+}
+
+/* --- Preview --- */
+.preview-area {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 16px;
+    max-height: 400px;
+    overflow: auto;
+}
+
+.preview-area img {
+    max-width: 100%;
+    height: auto;
+    image-rendering: auto;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-white);
+    transition: background 0.15s;
+    min-width: 90px;
+    margin: 4px;
+}
+
+.btn-dark {
+    background: var(--bg-button);
+}
+.btn-dark:hover { background: var(--bg-hover); }
+
+.btn-green {
+    background: var(--accent-green);
+}
+.btn-green:hover { background: var(--accent-blue); }
+
+.btn-purple {
+    background: var(--accent-purple);
+}
+.btn-purple:hover { background: var(--accent-orange); }
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: underline;
+}
+.btn-link:hover { color: var(--text-accent); }
+
+/* --- Info Bar --- */
+.info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 12px;
+    color: var(--text-dim);
+}
+
+/* --- Status Bar (Footer) --- */
+.status-bar {
+    background: var(--border);
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--text-white);
+    flex-shrink: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    main { padding: 12px 8px; }
+    .drop-zone { padding: 32px 16px; }
+    .key-panel { margin-top: 40px; }
+    .tab { font-size: 13px; padding: 8px 12px; }
+}

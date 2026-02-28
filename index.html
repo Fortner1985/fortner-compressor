@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortner Smart Compression</title>
+    <link rel="icon" type="image/png" href="assets/fortner_app_64.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Title Bar -->
+    <header class="title-bar">
+        <div class="title-left">
+            <img src="assets/fortner_app_64.png" alt="Fortner" class="title-icon">
+            <span class="title-brand">Fortner</span>
+            <span class="title-sub">Smart Compression</span>
+        </div>
+        <div class="title-right">
+            <span id="server-status" class="status-dot offline" title="Checking server..."></span>
+        </div>
+    </header>
+
+    <!-- API Key Setup (shown first time) -->
+    <div id="key-setup" class="panel key-panel" style="display: none;">
+        <h2>Welcome, Backer!</h2>
+        <p>Enter your API key to get started. You only need to do this once.</p>
+        <div class="key-input-row">
+            <input type="password" id="api-key-input" placeholder="Paste your API key here" autocomplete="off">
+            <button id="save-key-btn" class="btn btn-green">Connect</button>
+        </div>
+        <p id="key-error" class="error-text" style="display: none;"></p>
+    </div>
+
+    <!-- Main App (shown after key is set) -->
+    <main id="main-app" style="display: none;">
+        <!-- Mode Tabs -->
+        <div class="tab-bar">
+            <button class="tab active" data-mode="encode">Compress Image</button>
+            <button class="tab" data-mode="decode">Decompress .fortner</button>
+        </div>
+
+        <!-- Encode Panel -->
+        <div id="encode-panel" class="panel">
+            <div class="drop-zone" id="encode-drop">
+                <div class="drop-content">
+                    <div class="drop-icon">&#x1F5BC;</div>
+                    <p>Drop an image here or click to browse</p>
+                    <p class="drop-hint">PNG, JPG, WebP, AVIF, BMP, TGA, TIFF, GIF &mdash; max 50 MB</p>
+                </div>
+                <input type="file" id="encode-file" accept=".png,.jpg,.jpeg,.bmp,.tga,.webp,.avif,.tiff,.tif,.gif" hidden>
+            </div>
+            <div id="encode-status" class="status-area" style="display: none;">
+                <div class="progress-bar"><div class="progress-fill" id="encode-progress"></div></div>
+                <p id="encode-message">Uploading...</p>
+            </div>
+            <div id="encode-result" class="result-area" style="display: none;">
+                <div class="score-card">
+                    <div class="stars" id="encode-stars">&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</div>
+                    <div class="ratio" id="encode-ratio"></div>
+                    <div class="sizes" id="encode-sizes"></div>
+                </div>
+                <button id="encode-download" class="btn btn-green">Download .fortner</button>
+                <button id="encode-again" class="btn btn-dark">Compress Another</button>
+            </div>
+        </div>
+
+        <!-- Decode Panel -->
+        <div id="decode-panel" class="panel" style="display: none;">
+            <div class="drop-zone" id="decode-drop">
+                <div class="drop-content">
+                    <div class="drop-icon">&#x1F4E6;</div>
+                    <p>Drop a .fortner file here or click to browse</p>
+                    <p class="drop-hint">.fortner files only</p>
+                </div>
+                <input type="file" id="decode-file" accept=".fortner" hidden>
+            </div>
+            <div id="decode-status" class="status-area" style="display: none;">
+                <div class="progress-bar"><div class="progress-fill" id="decode-progress"></div></div>
+                <p id="decode-message">Uploading...</p>
+            </div>
+            <div id="decode-result" class="result-area" style="display: none;">
+                <div class="preview-area">
+                    <img id="decode-preview" alt="Decoded image preview">
+                </div>
+                <button id="decode-download" class="btn btn-green">Download PNG</button>
+                <button id="decode-again" class="btn btn-dark">Decompress Another</button>
+            </div>
+        </div>
+
+        <!-- Info Bar -->
+        <div class="info-bar">
+            <span>Fortner Smart Compression &mdash; Patent Pending</span>
+            <button id="change-key-btn" class="btn-link">Change API Key</button>
+        </div>
+    </main>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+        <span id="footer-status">Ready</span>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
