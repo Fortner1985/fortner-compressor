@@ -172,6 +172,43 @@ main {
     margin-top: 8px;
 }
 
+.success-text {
+    color: #22c55e;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.hint-text {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.server-url-details {
+    margin-top: 16px;
+    border-top: 1px solid var(--border-light);
+    padding-top: 12px;
+}
+
+.server-url-details summary {
+    cursor: pointer;
+    color: var(--text-label);
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.server-url-details summary:hover {
+    color: var(--accent-purple);
+}
+
+.server-url-details .key-input-row {
+    margin-top: 8px;
+}
+
+.server-url-details input {
+    font-size: 12px;
+}
+
 /* --- Tab Bar --- */
 .tab-bar {
     display: flex;
@@ -376,6 +413,22 @@ main {
     padding: 8px 0;
     font-size: 12px;
     color: var(--text-dim);
+}
+
+.info-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#settings-btn {
+    font-size: 16px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+#settings-btn:hover {
+    opacity: 1;
 }
 
 /* --- Status Bar (Footer) --- */

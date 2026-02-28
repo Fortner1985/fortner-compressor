@@ -14,7 +14,7 @@
     // --- Configuration ---------------------------------------------------
     // The API URL is loaded from config.json so the tunnel URL can change
     // without redeploying the site. Falls back to localhost for dev.
-    let API_URL = 'http://localhost:8080';
+    let API_URL = localStorage.getItem('fortner_api_url') || 'http://localhost:8080';
     let apiKey = localStorage.getItem('fortner_api_key') || '';
 
     // --- DOM Elements ----------------------------------------------------
@@ -65,14 +65,19 @@
 
     // --- Init ------------------------------------------------------------
     async function init() {
-        // Load config
-        try {
-            const resp = await fetch('config.json');
-            if (resp.ok) {
-                const cfg = await resp.json();
-                if (cfg.apiUrl) API_URL = cfg.apiUrl.replace(/\/+$/, '');
-            }
-        } catch { /* use default */ }
+        // Load config — localStorage override takes priority
+        const savedUrl = localStorage.getItem('fortner_api_url');
+        if (savedUrl) {
+            API_URL = savedUrl;
+        } else {
+            try {
+                const resp = await fetch('config.json');
+                if (resp.ok) {
+                    const cfg = await resp.json();
+                    if (cfg.apiUrl) API_URL = cfg.apiUrl.replace(/\/+$/, '');
+                }
+            } catch { /* use default */ }
+        }
 
         // Check server
         checkServer();
@@ -110,11 +115,32 @@
     }
 
     // --- Key Setup -------------------------------------------------------
+    const serverUrlInput = $('#server-url-input');
+    const saveUrlBtn     = $('#save-url-btn');
+    const urlSaved       = $('#url-saved');
+    const settingsBtn    = $('#settings-btn');
+
     function showKeySetup() {
         keySetup.style.display = '';
         mainApp.style.display = 'none';
         keyInput.value = '';
+        // Pre-fill current server URL
+        if (serverUrlInput) serverUrlInput.value = API_URL !== 'http://localhost:8080' ? API_URL : '';
         keyInput.focus();
+    }
+
+    function saveServerUrl() {
+        const url = serverUrlInput.value.trim().replace(/\/+$/, '');
+        if (url) {
+            API_URL = url;
+            localStorage.setItem('fortner_api_url', url);
+        } else {
+            localStorage.removeItem('fortner_api_url');
+            API_URL = 'http://localhost:8080';
+        }
+        urlSaved.style.display = '';
+        setTimeout(() => { urlSaved.style.display = 'none'; }, 2000);
+        checkServer();
     }
 
     function showApp() {
@@ -398,6 +424,18 @@
             apiKey = '';
             localStorage.removeItem('fortner_api_key');
             showKeySetup();
+        });
+
+        // Server URL
+        if (saveUrlBtn) saveUrlBtn.addEventListener('click', saveServerUrl);
+        if (serverUrlInput) serverUrlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveServerUrl(); });
+
+        // Settings gear — go back to key/url screen
+        if (settingsBtn) settingsBtn.addEventListener('click', () => {
+            showKeySetup();
+            // Open the server URL section
+            const details = document.querySelector('.server-url-details');
+            if (details) details.open = true;
         });
 
         // Tabs

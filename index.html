@@ -28,6 +28,15 @@
             <input type="password" id="api-key-input" placeholder="Paste your API key here" autocomplete="off">
             <button id="save-key-btn" class="btn btn-green">Connect</button>
         </div>
+        <details class="server-url-details">
+            <summary>Server URL</summary>
+            <p class="hint-text">Paste the tunnel URL shown by the startup script. Saved in your browser.</p>
+            <div class="key-input-row">
+                <input type="url" id="server-url-input" placeholder="https://your-tunnel.trycloudflare.com" autocomplete="off">
+                <button id="save-url-btn" class="btn btn-dark">Save</button>
+            </div>
+            <p id="url-saved" class="success-text" style="display: none;">Saved!</p>
+        </details>
         <p id="key-error" class="error-text" style="display: none;"></p>
     </div>
 
@@ -90,7 +99,10 @@
         <!-- Info Bar -->
         <div class="info-bar">
             <span>Fortner Smart Compression &mdash; Patent Pending</span>
-            <button id="change-key-btn" class="btn-link">Change API Key</button>
+            <span class="info-right">
+                <button id="settings-btn" class="btn-link" title="Server settings">&#x2699;</button>
+                <button id="change-key-btn" class="btn-link">Change API Key</button>
+            </span>
         </div>
     </main>
 
